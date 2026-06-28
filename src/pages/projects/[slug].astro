@@ -1,0 +1,139 @@
+---
+import { getCollection, render } from "astro:content";
+import NavHeader from "../../components/common/NavHeader.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+	const projects = await getCollection("projects");
+	return projects.map((entry) => ({
+		params: { slug: entry.id.replace(/\.[^.]*$/, "") },
+		props: { entry },
+	}));
+}
+
+// 将来 "Products" / "/products" へ変更する際はここだけ修正
+const breadcrumb = {
+	parent: { label: "Projects", href: "/projects" },
+} as const;
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const {
+	title,
+	shortName,
+	subtitle,
+	tagline,
+	status,
+	category,
+	technologies,
+	description,
+	ogImage,
+} = entry.data;
+
+const statusConfig = {
+	active: { label: "公開中", className: "bg-status-active" },
+	beta: { label: "Beta", className: "bg-status-beta" },
+	development: { label: "開発中", className: "bg-status-development" },
+	archived: { label: "終了", className: "bg-status-archived" },
+} as const;
+
+const { label: statusLabel, className: statusClassName } = statusConfig[status];
+
+const seoTitle = shortName ? `${shortName} — ${title}` : title;
+---
+
+<BaseLayout title={seoTitle} description={description} ogImage={ogImage}>
+  <NavHeader />
+  <main>
+    <header class="border-b border-border">
+      <div class="max-w-4xl mx-auto px-container-x py-12 md:py-16">
+        <nav
+          aria-label="breadcrumb"
+          class="flex items-center gap-2 text-sm text-text-muted mb-8"
+        >
+          <a href="/" class="hover:text-text-primary transition-colors">ホーム</a>
+          <span aria-hidden="true">/</span>
+          <a
+            href={breadcrumb.parent.href}
+            class="hover:text-text-primary transition-colors"
+          >
+            {breadcrumb.parent.label}
+          </a>
+          <span aria-hidden="true">/</span>
+          <span class="text-text-secondary">{shortName ?? title}</span>
+        </nav>
+        <div class="flex items-center gap-3 mb-4">
+          <span
+            class={`text-xs px-2 py-0.5 rounded-full font-medium text-white ${statusClassName}`}
+          >
+            {statusLabel}
+          </span>
+          <span class="text-xs text-text-muted">{category}</span>
+        </div>
+        <h1
+          class="font-sans font-semibold text-3xl md:text-4xl text-text-primary mb-2 leading-tight"
+        >
+          {title}
+        </h1>
+        {subtitle && (
+          <p class="text-sm text-text-muted font-medium mb-3">
+            {subtitle}
+          </p>
+        )}
+        <p class="text-lg text-text-secondary leading-relaxed mb-6">
+          {tagline}
+        </p>
+        {technologies.length > 0 && (
+          <div class="flex flex-wrap gap-2">
+            {technologies.map((tech) => (
+              <span class="text-xs px-3 py-1 rounded-full bg-bg-muted text-text-muted border border-border font-medium">
+                {tech}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </header>
+    <section class="max-w-4xl mx-auto px-container-x py-12 md:py-16">
+      <div class="product-body">
+        <Content />
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style is:global>
+  .product-body h2 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+    padding-left: 0.75rem;
+    border-left: 3px solid var(--color-brand);
+  }
+
+  .product-body h2:first-child {
+    margin-top: 0;
+  }
+
+  .product-body p {
+    font-size: 0.9375rem;
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+  }
+
+  .product-body ul {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+    list-style-type: disc;
+  }
+
+  .product-body li {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    margin-bottom: 0.375rem;
+  }
+</style>

@@ -29,6 +29,7 @@ const getSlug = (id: string) => id.replace(/\.[^.]*$/, "");
         {projects.map((project) => (
           <ProjectCard
             title={project.data.title}
+            subtitle={project.data.subtitle}
             tagline={project.data.tagline}
             status={project.data.status}
             id={getSlug(project.id)}

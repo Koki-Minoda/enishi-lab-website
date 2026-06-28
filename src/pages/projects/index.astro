@@ -1,0 +1,42 @@
+---
+import { getCollection } from "astro:content";
+import NavHeader from "../../components/common/NavHeader.astro";
+import ProjectCard from "../../components/projects/ProjectCard.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const allProjects = await getCollection("projects");
+const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
+const getSlug = (id: string) => id.replace(/\.[^.]*$/, "");
+---
+
+<BaseLayout
+  title="Projects"
+  description="ENISHIが縁のために開発するプロダクト一覧。"
+>
+  <NavHeader />
+  <main>
+    <section class="py-16 px-container-x text-center border-b border-border">
+      <h1 class="font-sans font-semibold text-4xl md:text-5xl text-text-primary mb-4">
+        Projects
+      </h1>
+      <p class="text-text-secondary text-lg max-w-xl mx-auto leading-relaxed">
+        ENISHIが縁のために作るプロダクト
+      </p>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-container-x py-16">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {projects.map((project) => (
+          <ProjectCard
+            title={project.data.title}
+            tagline={project.data.tagline}
+            status={project.data.status}
+            id={getSlug(project.id)}
+            thumbnail={project.data.thumbnail}
+            category={project.data.category}
+          />
+        ))}
+      </div>
+    </section>
+  </main>
+</BaseLayout>

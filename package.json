@@ -21,6 +21,8 @@
 		"tailwindcss": "^4.3.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.5.1"
+		"@astrojs/check": "^0.9.9",
+		"@biomejs/biome": "^2.5.1",
+		"typescript": "^6.0.3"
 	}
 }

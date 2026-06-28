@@ -1,0 +1,58 @@
+---
+import "../styles/global.css";
+
+interface Props {
+	title?: string;
+	description?: string;
+	canonical?: string;
+	ogImage?: string;
+	noIndex?: boolean;
+}
+
+const {
+	title = "ENISHI-LAB",
+	description = "縁をつなぐプロダクトを作る会社",
+	canonical,
+	ogImage,
+	noIndex = false,
+} = Astro.props;
+
+const pageTitle =
+	title === "ENISHI-LAB" ? "ENISHI-LAB" : `${title} | ENISHI-LAB`;
+---
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+
+    {canonical && <link rel="canonical" href={canonical} />}
+    {noIndex && <meta name="robots" content="noindex" />}
+
+    <!-- OGP -->
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    {canonical && <meta property="og:url" content={canonical} />}
+    {ogImage && <meta property="og:image" content={ogImage} />}
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+
+    <!-- Google Fonts: Noto Sans JP (body/UI) + Shippori Mincho (Hero H1 only) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600&family=Shippori+Mincho:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-bg-page text-text-primary font-sans antialiased leading-relaxed">
+    <slot />
+  </body>
+</html>

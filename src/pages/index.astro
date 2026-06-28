@@ -1,19 +1,11 @@
 ---
-import "../styles/global.css";
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<html lang="ja">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="generator" content={Astro.generator} />
-    <title>ENISHI-LAB</title>
-  </head>
-  <body class="bg-white text-gray-900 font-sans">
-    <main class="min-h-screen flex items-center justify-center">
-      <h1 class="text-4xl font-bold tracking-tight">ENISHI-LAB</h1>
-    </main>
-  </body>
-</html>
+<BaseLayout>
+  <main class="min-h-screen flex items-center justify-center">
+    <h1 class="text-4xl font-semibold tracking-tight text-text-primary">
+      ENISHI-LAB
+    </h1>
+  </main>
+</BaseLayout>

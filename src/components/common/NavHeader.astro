@@ -1,0 +1,77 @@
+---
+---
+
+<header class="sticky top-0 z-50 h-16 bg-bg-page border-b border-border">
+  <div class="max-w-6xl mx-auto px-container-x h-full flex items-center justify-between">
+    <a href="/" class="font-semibold text-lg tracking-wide text-text-primary">
+      ENISHI-LAB
+    </a>
+
+    <nav class="hidden md:flex items-center gap-8" aria-label="グローバルナビゲーション">
+      <a href="/projects" class="text-sm text-text-secondary hover:text-text-primary transition-colors">
+        Projects
+      </a>
+      <a href="/about" class="text-sm text-text-secondary hover:text-text-primary transition-colors">
+        About
+      </a>
+      <a
+        href="/contact"
+        class="text-sm px-4 py-2 rounded-md bg-brand text-text-on-brand hover:bg-brand-hover transition-colors"
+      >
+        Contact
+      </a>
+    </nav>
+
+    <button
+      type="button"
+      id="nav-toggle"
+      class="md:hidden p-2 text-text-secondary hover:text-text-primary transition-colors"
+      aria-label="メニューを開く"
+      aria-expanded="false"
+      aria-controls="nav-menu"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </div>
+</header>
+
+<div id="nav-menu" class="hidden fixed inset-0 z-40 bg-bg-page md:hidden" aria-hidden="true">
+  <div class="flex flex-col items-center justify-center h-full gap-8">
+    <a href="/projects" class="text-xl text-text-primary hover:text-text-brand transition-colors">
+      Projects
+    </a>
+    <a href="/about" class="text-xl text-text-primary hover:text-text-brand transition-colors">
+      About
+    </a>
+    <a
+      href="/contact"
+      class="text-xl px-8 py-3 rounded-md bg-brand text-text-on-brand hover:bg-brand-hover transition-colors"
+    >
+      Contact
+    </a>
+  </div>
+</div>
+
+<script>
+	const toggle = document.getElementById("nav-toggle");
+	const menu = document.getElementById("nav-menu");
+
+	if (toggle && menu) {
+		toggle.addEventListener("click", () => {
+			const isOpen = !menu.classList.contains("hidden");
+			if (isOpen) {
+				menu.classList.add("hidden");
+				menu.setAttribute("aria-hidden", "true");
+				toggle.setAttribute("aria-expanded", "false");
+				toggle.setAttribute("aria-label", "メニューを開く");
+			} else {
+				menu.classList.remove("hidden");
+				menu.setAttribute("aria-hidden", "false");
+				toggle.setAttribute("aria-expanded", "true");
+				toggle.setAttribute("aria-label", "メニューを閉じる");
+			}
+		});
+	}
+</script>

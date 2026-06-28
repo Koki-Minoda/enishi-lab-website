@@ -1,11 +1,10 @@
 ---
+import NavHeader from "../components/common/NavHeader.astro";
+import Hero from "../components/home/Hero.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout>
-  <main class="min-h-screen flex items-center justify-center">
-    <h1 class="text-4xl font-semibold tracking-tight text-text-primary">
-      ENISHI-LAB
-    </h1>
-  </main>
+  <NavHeader />
+  <Hero />
 </BaseLayout>

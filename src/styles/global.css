@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@theme {
+  /* === COLOR: Brand === */
+  --color-brand:         #B8922B;
+  --color-brand-hover:   #9A7622;
+  --color-brand-light:   #FEF3CC;
+  --color-brand-dark:    #7A5C14;
+
+  /* === COLOR: Surface === */
+  --color-bg-page:       #FAFAF7;
+  --color-bg-card:       #FFFFFF;
+  --color-bg-muted:      #F4F4EE;
+  --color-bg-inverse:    #1C1C14;
+
+  /* === COLOR: Text === */
+  --color-text-primary:  #1C1C14;
+  --color-text-secondary:#4E4E44;
+  --color-text-muted:    #9A9A8C;
+  --color-text-on-brand: #FFFFFF;
+  --color-text-on-dark:  #FAFAF7;
+  --color-text-brand:    #B8922B;
+
+  /* === COLOR: Border === */
+  --color-border:        #E4E4DC;
+  --color-border-muted:  #F4F4EE;
+  --color-border-brand:  #B8922B;
+
+  /* === COLOR: Status === */
+  --color-status-active:      #16A34A;
+  --color-status-beta:        #D97706;
+  --color-status-development: #2563EB;
+  --color-status-archived:    #9A9A8C;
+
+  /* === TYPOGRAPHY: Font Family === */
+  --font-sans:    'Noto Sans JP', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-serif:   'Shippori Mincho', 'Noto Serif JP', ui-serif, serif;
+  --font-mono:    'JetBrains Mono', 'Source Code Pro', ui-monospace, monospace;
+
+  /* === TYPOGRAPHY: Scale === */
+  --text-xs:   0.75rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-lg:   1.125rem;
+  --text-xl:   1.25rem;
+  --text-2xl:  1.5rem;
+  --text-3xl:  1.875rem;
+  --text-4xl:  2.25rem;
+  --text-5xl:  3rem;
+  --text-6xl:  3.75rem;
+  --text-7xl:  4.5rem;
+
+  /* === TYPOGRAPHY: Line Height === */
+  --leading-tight:   1.3;
+  --leading-normal:  1.6;
+  --leading-relaxed: 1.8;
+  --leading-loose:   2.0;
+
+  /* === SPACING === */
+  --spacing-section-y:    6rem;
+  --spacing-section-y-lg: 8rem;
+  --spacing-container-x:  1.5rem;
+
+  /* === BORDER RADIUS === */
+  --radius-sm:   0.25rem;
+  --radius-md:   0.5rem;
+  --radius-lg:   0.75rem;
+  --radius-xl:   1rem;
+  --radius-full: 9999px;
+
+  /* === MOTION === */
+  --duration-fast:   150ms;
+  --duration-base:   300ms;
+  --duration-slow:   600ms;
+  --duration-slower: 800ms;
+  --ease-out:        cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out:     cubic-bezier(0.45, 0, 0.55, 1);
+}

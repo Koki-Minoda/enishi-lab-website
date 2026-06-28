@@ -1,0 +1,43 @@
+name: Deploy
+
+# push to main で自動実行
+# 有効化前に GitHub Secrets の登録が必要 (下記 README 参照)
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+
+      # rsync 対象: /var/www/enishi-lab のみ
+      # mgx-poker.com / /var/www/mgx-poker / nginx 設定には一切触れない
+      - name: Deploy via rsync
+        run: |
+          rsync -avz --delete dist/ \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/enishi-lab/"

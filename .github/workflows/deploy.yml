@@ -59,6 +59,23 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Validate Secrets
+        env:
+          VPS_HOST:        ${{ secrets.VPS_HOST }}
+          VPS_USER:        ${{ secrets.VPS_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          missing=()
+          [ -z "$VPS_HOST" ]        && missing+=(VPS_HOST)
+          [ -z "$VPS_USER" ]        && missing+=(VPS_USER)
+          [ -z "$SSH_PRIVATE_KEY" ] && missing+=(SSH_PRIVATE_KEY)
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "❌ GitHub Secrets が未登録です: ${missing[*]}"
+            echo "   Repository → Settings → Secrets and variables → Actions"
+            exit 1
+          fi
+          echo "✅ すべての Secrets が登録されています"
+
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
@@ -69,6 +86,9 @@ jobs:
       # rsync 対象: /var/www/enishi-lab のみ
       # mgx-poker.com / /var/www/mgx-poker / nginx 設定には一切触れない
       - name: Deploy via rsync
+        env:
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
         run: |
           rsync -avz --delete dist/ \
-            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/enishi-lab/"
+            "${VPS_USER}@${VPS_HOST}:/var/www/enishi-lab/"

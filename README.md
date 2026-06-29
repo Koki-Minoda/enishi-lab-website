@@ -1,6 +1,6 @@
 # ENISHI-LAB Website
 
-ENISHIの公式Webサイト。
+ENISHI-LABの公式Webサイト。
 
 ## Stack
 

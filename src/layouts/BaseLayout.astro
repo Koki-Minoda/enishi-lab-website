@@ -19,6 +19,10 @@ const {
 
 const pageTitle =
 	title === "ENISHI-LAB" ? "ENISHI-LAB" : `${title} | ENISHI-LAB`;
+
+const canonicalURL =
+	canonical ??
+	new URL(Astro.url.pathname, Astro.site ?? "https://enishi-lab.com").href;
 ---
 
 <html lang="ja">
@@ -30,14 +34,14 @@ const pageTitle =
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
 
-    {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="canonical" href={canonicalURL} />
     {noIndex && <meta name="robots" content="noindex" />}
 
     <!-- OGP -->
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:url" content={canonicalURL} />
     {ogImage && <meta property="og:image" content={ogImage} />}
 
     <!-- Favicon -->

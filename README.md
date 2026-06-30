@@ -2,13 +2,16 @@
 
 ENISHI-LABの公式Webサイト。
 
+- **URL:** https://enishi-lab.com
+- **Stack:** Astro 7 / Tailwind v4 / TypeScript / Biome / pnpm
+
 ## Stack
 
 - [Astro](https://astro.build/) 7.x — static output
 - [Tailwind CSS](https://tailwindcss.com/) v4
 - TypeScript (strict)
 - [Biome](https://biomejs.dev/) — linter / formatter
-- pnpm
+- pnpm 11.x
 
 ## Development
 
@@ -22,48 +25,66 @@ pnpm preview    # ビルド結果をローカルでプレビュー
 ## Quality
 
 ```bash
-pnpm lint       # lint チェック
+pnpm check      # astro check + biome check (CI 必須)
 pnpm lint:fix   # lint 自動修正
 pnpm format     # フォーマット
-pnpm check      # astro check + biome check
 ```
 
-## Branch Strategy
+## Pages
 
-| Branch | 役割 |
-|--------|------|
-| `main` | production (VPS自動デプロイ対象) |
-| `dev` | 統合ブランチ |
-| `feature/*` | 機能開発 |
+| URL | ページ |
+|-----|--------|
+| `/` | Top (Hero + CTA) |
+| `/about` | ENISHI-LABについて |
+| `/projects` | プロダクト一覧 |
+| `/projects/mgx` | MGX 詳細 |
+| `/projects/family-quest` | Family Quest 詳細 |
+| `/projects/goen-note` | ご縁ノート 詳細 |
+
+## Deploy
+
+- **VPS:** mgx-prod-01 (Ubuntu 22.04 / nginx 1.18)
+- **Web root:** `/var/www/enishi-lab`
+- **CI/CD:** GitHub Actions (`.github/workflows/deploy.yml`)
+- **Trigger:** `workflow_dispatch` → Secrets 登録後に `push: main` へ変更予定
+- **Secrets 必要:** `VPS_HOST` / `VPS_USER` / `SSH_PRIVATE_KEY`
+
+詳細: [docs/operation/README.md](docs/operation/README.md)
+
+## SEO
+
+- **sitemap:** https://enishi-lab.com/sitemap-index.xml
+- **robots.txt:** https://enishi-lab.com/robots.txt
+- **canonical:** BaseLayout.astro で全ページ自動生成
+- **Search Console:** Human Sprint A-2 で登録予定
 
 ## Structure
 
 ```
 src/
-├── pages/          # ルーティング (index.astro, works/, about, contact)
+├── pages/          # ルーティング
 ├── components/
-│   ├── common/     # Header, Footer, SEO
+│   ├── common/     # NavHeader 等
 │   ├── home/       # Top page
-│   └── works/      # Works
-├── layouts/        # ページレイアウト
-├── content/        # MDX コンテンツ (works/ 等)
+│   └── projects/   # ProjectCard 等
+├── layouts/        # BaseLayout.astro
+├── content/        # MDX コンテンツ (projects/)
 └── styles/
-    └── global.css  # Tailwind v4 @import + @theme (Design System)
+    └── global.css  # Tailwind v4 @theme (Design System)
 docs/
-├── adr/            # Architecture Decision Records (なぜ)
-├── architecture/   # 現在の構造 (何が)
-└── design/         # UI / Design System
+├── adr/            # Architecture Decision Records
+├── architecture/   # 構造定義
+├── brand/          # Brand Voice / Messaging
+├── design/         # Design System
+└── operation/      # 運用手順書
+scripts/
+├── nginx-enishi-lab.conf   # VPS nginx Virtual Host (HTTP-only)
+└── vps-readiness-check.sh  # VPS 事前確認スクリプト
 ```
-
-## Deploy
-
-- Target: VPS (nginx + Let's Encrypt)
-- CI/CD: GitHub Actions (設定予定)
-- Branch: `main` → production
 
 ## Docs
 
+- [運用手順書](docs/operation/README.md)
 - [Architecture](docs/architecture/overview.md)
 - [Design System](docs/design/system.md)
 - [ADR一覧](docs/adr/)
-- [Bootstrap DoD](docs/bootstrap-dod.md)

@@ -113,18 +113,44 @@ curl -s https://enishi-lab.com/sitemap-0.xml | grep '<loc>' | wc -l
 
 Search Console 登録前に最新版（Sprint A-1）をデプロイしておく。
 
+**まず既存の deploy 用鍵を確認する（ローカル PC で実行）:**
+
+```bash
+ls ~/.ssh/ | grep deploy
+# deploy 用鍵（例: enishi_deploy_key, id_ed25519_deploy 等）が存在するか確認
+```
+
+**既存鍵が存在する場合 → そのまま利用する:**
+
+```bash
+# 公開鍵の内容を確認
+cat ~/.ssh/<既存鍵名>.pub
+
+# VPS の authorized_keys に未登録の場合のみ追加
+ssh-copy-id -i ~/.ssh/<既存鍵名>.pub <VPS_USER>@<VPS_HOST>
+
+# 秘密鍵の内容を GitHub Secrets に登録
+cat ~/.ssh/<既存鍵名>
+```
+
+**既存鍵が存在しない場合のみ → 新規生成する:**
+
+```bash
+ssh-keygen -t ed25519 -C "github-actions-deploy" -f ./enishi_deploy_key -N ""
+ssh-copy-id -i ./enishi_deploy_key.pub <VPS_USER>@<VPS_HOST>
+# 秘密鍵を GitHub Secrets に登録後、ローカルから削除
+rm ./enishi_deploy_key ./enishi_deploy_key.pub
+```
+
+**GitHub Secrets に登録する:**
+
 ```
 GitHub → Settings → Secrets and variables → Actions → New repository secret
 
 登録する Secrets:
   - VPS_HOST       : mgx-prod-01 の IP またはホスト名
   - VPS_USER       : /var/www/enishi-lab を所有する SSH ユーザー名
-  - SSH_PRIVATE_KEY: deploy 専用 ed25519 秘密鍵（ローカル PC で生成）
-
-SSH キー生成（ローカル PC で実行）:
-  ssh-keygen -t ed25519 -C "github-actions-deploy" -f ./enishi_deploy_key -N ""
-  ssh-copy-id -i ./enishi_deploy_key.pub <VPS_USER>@<VPS_HOST>
-  # → GitHub Secrets に秘密鍵を登録後、ローカルから削除
+  - SSH_PRIVATE_KEY: 上記で確認または生成した ed25519 秘密鍵
 ```
 
 ### Step 2: 最新版を手動デプロイ

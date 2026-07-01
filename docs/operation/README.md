@@ -93,7 +93,119 @@ rm ./enishi_deploy_key ./enishi_deploy_key.pub
 
 ---
 
-## 4. SEO 監視
+## 4. Google Search Console 登録手順（Human Action）
+
+### 前提確認
+
+Search Console 登録の前に以下を確認する。
+
+```bash
+# robots.txt 確認
+curl -I https://enishi-lab.com/robots.txt
+# → HTTP/2 200 であること
+
+# sitemap 確認
+curl -s https://enishi-lab.com/sitemap-0.xml | grep '<loc>' | wc -l
+# → 6 以上であること
+```
+
+### Step 1: GitHub Actions Secrets の登録
+
+Search Console 登録前に最新版（Sprint A-1）をデプロイしておく。
+
+```
+GitHub → Settings → Secrets and variables → Actions → New repository secret
+
+登録する Secrets:
+  - VPS_HOST       : mgx-prod-01 の IP またはホスト名
+  - VPS_USER       : /var/www/enishi-lab を所有する SSH ユーザー名
+  - SSH_PRIVATE_KEY: deploy 専用 ed25519 秘密鍵（ローカル PC で生成）
+
+SSH キー生成（ローカル PC で実行）:
+  ssh-keygen -t ed25519 -C "github-actions-deploy" -f ./enishi_deploy_key -N ""
+  ssh-copy-id -i ./enishi_deploy_key.pub <VPS_USER>@<VPS_HOST>
+  # → GitHub Secrets に秘密鍵を登録後、ローカルから削除
+```
+
+### Step 2: 最新版を手動デプロイ
+
+```
+GitHub → Actions → Deploy to VPS → Run workflow → branch: main → Run workflow
+→ Status が "completed" (緑チェック) になるまで待つ
+```
+
+デプロイ完了後に canonical が出力されていることを確認:
+
+```bash
+curl -s https://enishi-lab.com/ | grep canonical
+# → <link rel="canonical" href="https://enishi-lab.com/"> が出力されること
+
+curl -s https://enishi-lab.com/ | grep og:url
+# → <meta property="og:url" content="https://enishi-lab.com/"> が出力されること
+```
+
+### Step 3: Cloudflare DNS に TXT レコードを追加（所有権確認）
+
+```
+Cloudflare → enishi-lab.com → DNS → Add record
+
+Type:    TXT
+Name:    @
+Content: google-site-verification=<Search Console が発行するコード>
+TTL:     Auto
+```
+
+TXT レコードは Proxy を経由しないため Cloudflare Proxy の設定変更は不要。
+DNS 反映は通常 5–30 分。最大 24 時間待つ場合がある。
+
+### Step 4: Search Console にプロパティを追加
+
+```
+https://search.google.com/search-console/welcome
+
+1. 「URL プレフィックス」を選択
+2. https://enishi-lab.com を入力
+3. DNS TXT レコードを選択して「確認」をクリック
+4. 「所有権を確認しました」が表示されれば完了
+```
+
+### Step 5: sitemap を送信
+
+```
+Search Console → サイトマップ → 新しいサイトマップを追加
+
+送信する URL: sitemap-index.xml
+（自動で sitemap-0.xml も読み込まれる）
+```
+
+### Step 6: URL インデックス登録をリクエスト
+
+```
+Search Console → URL 検査 → https://enishi-lab.com/ を入力
+→「インデックス登録をリクエスト」をクリック
+
+全ページ（6ページ）に対して順次実行:
+  - https://enishi-lab.com/
+  - https://enishi-lab.com/about/
+  - https://enishi-lab.com/projects/
+  - https://enishi-lab.com/projects/<各slug>/（3件）
+```
+
+### Human Action Completion チェックリスト
+
+```
+[ ] GitHub Secrets 3件 登録済み (VPS_HOST / VPS_USER / SSH_PRIVATE_KEY)
+[ ] GitHub Actions 手動デプロイ 成功（緑チェック）
+[ ] canonical / og:url が live で出力されることを curl で確認
+[ ] Cloudflare DNS TXT レコード追加済み
+[ ] Search Console プロパティ追加・所有権確認済み
+[ ] sitemap-index.xml を Search Console に送信済み
+[ ] 全 6 URL に URL Inspection リクエスト済み
+```
+
+---
+
+## 5. SEO 監視
 
 ### Engineering KPI チェック (2 週間ごと)
 
@@ -129,7 +241,7 @@ curl -s https://enishi-lab.com/ | grep 'canonical'
 
 ---
 
-## 5. SSL 証明書更新
+## 6. SSL 証明書更新
 
 certbot は自動更新 (cron) が設定されています。
 
@@ -144,7 +256,7 @@ sudo certbot renew             # 本番
 
 ---
 
-## 6. nginx 設定変更手順
+## 7. nginx 設定変更手順
 
 ```bash
 # テスト (必ず実施)

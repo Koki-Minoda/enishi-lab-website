@@ -5,25 +5,9 @@ name: Deploy
 # 必要な Secrets (Settings → Secrets and variables → Actions):
 #   VPS_HOST        : mgx-prod-01 の IP またはホスト名
 #   VPS_USER        : /var/www/enishi-lab を所有する SSH ユーザー名
-#   SSH_PRIVATE_KEY : deploy 専用 ed25519 秘密鍵 (下記手順参照)
+#   SSH_PRIVATE_KEY : 確認または生成した ed25519 秘密鍵
 #
-# SSH キーペア生成手順 (ローカル PC で実行すること — VPS 上では生成しない):
-#
-#   # 1. ローカル PC でキーペア生成
-#   ssh-keygen -t ed25519 -C "github-actions-deploy" \
-#              -f ./enishi_deploy_key -N ""
-#
-#   # 2. 公開鍵だけを VPS の authorized_keys に追加
-#   ssh-copy-id -i ./enishi_deploy_key.pub <VPS_USER>@<VPS_HOST>
-#   # または手動:
-#   # cat ./enishi_deploy_key.pub | ssh <VPS_USER>@<VPS_HOST> \
-#   #   "cat >> ~/.ssh/authorized_keys"
-#
-#   # 3. 秘密鍵を GitHub Secrets (SSH_PRIVATE_KEY) に登録
-#   cat ./enishi_deploy_key
-#
-#   # 4. ローカルのキーファイルを削除 (repo には commit しない)
-#   rm ./enishi_deploy_key ./enishi_deploy_key.pub
+# SSH キーの確認・生成手順: docs/operation/README.md → Section 4 Step 1 を参照
 #
 # Secrets 登録完了後、下記トリガーを以下へ変更して有効化:
 #   on:

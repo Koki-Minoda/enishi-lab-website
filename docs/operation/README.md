@@ -76,20 +76,9 @@ sudo nginx -s reload
 |-----------|------|---------|
 | `VPS_HOST` | mgx-prod-01 の IP またはホスト名 | GitHub → Settings → Secrets |
 | `VPS_USER` | SSH ユーザー名 | 同上 |
-| `SSH_PRIVATE_KEY` | deploy 専用 ed25519 秘密鍵 | 同上 |
+| `SSH_PRIVATE_KEY` | 上記で確認または生成した ed25519 秘密鍵 | 同上 |
 
-**SSH キー生成 (ローカル PC で実行):**
-
-```bash
-ssh-keygen -t ed25519 -C "github-actions-deploy" \
-           -f ./enishi_deploy_key -N ""
-
-# 公開鍵だけを VPS に追加
-ssh-copy-id -i ./enishi_deploy_key.pub <VPS_USER>@<VPS_HOST>
-
-# 秘密鍵を GitHub Secrets に登録後、ローカルから削除
-rm ./enishi_deploy_key ./enishi_deploy_key.pub
-```
+SSH キーの確認・生成手順は「4. Google Search Console 登録手順 → Step 1」を参照。
 
 ---
 
